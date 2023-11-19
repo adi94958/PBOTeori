@@ -4,6 +4,8 @@
  */
 package com.mycompany.pemesananmk;
 
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author gamin
@@ -26,6 +28,8 @@ public class Form extends javax.swing.JFrame {
         TFSteak.setEnabled(false);
         TFBurger.setEnabled(false);
         TFSphageti.setEnabled(false);
+        
+        TFTotalBayar.setText("0");
     }
 
     /**
@@ -279,9 +283,9 @@ public class Form extends javax.swing.JFrame {
                             .addComponent(labelNoHp)
                             .addComponent(TFNoHp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(labelTotalBayar)
-                    .addComponent(TFTotalBayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(TFTotalBayar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labelTotalBayar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(BtnTambah)
                 .addGap(21, 21, 21)
@@ -299,39 +303,108 @@ public class Form extends javax.swing.JFrame {
     }//GEN-LAST:event_TFNoHpActionPerformed
 
     private void BtnTambahActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnTambahActionPerformed
-        String tampilPesanan = "";
-        String tampilCustomer = "";
-        tampilCustomer += "Nama : " + TFNama.getText();
-        tampilCustomer += "\nAlamat : " + TFAlamat.getText();
-        tampilCustomer += "\nNo Hp : " + TFNoHp.getText();
-        int bayar = 0;
-        if(CBSteak.isSelected()){
-            int jumlah = Integer.parseInt(TFSteak.getText());
-            int total;
-            total = jumlah * 30000;
-            bayar += total;
-            tampilPesanan += "- " + CBSteak.getText() + " Rp. 30.000" + " x " + jumlah + " = " + total + "\n";
-        }if(CBPizza.isSelected()){
-            int jumlah = Integer.parseInt(TFPizza.getText());
-            int total;
-            total = jumlah * 30000;
-            bayar += total;
-            tampilPesanan += "- " + CBPizza.getText() + " Rp. 50.000" + " x " + jumlah + " = " + total + "\n";
-        }if(CBSphageti.isSelected()){
-            int jumlah = Integer.parseInt(TFSphageti.getText());
-            int total;
-            total = jumlah * 30000;
-            bayar += total;
-            tampilPesanan += "- " + CBSphageti.getText() + " Rp. 20.000" + " x " + jumlah + " = " + total + "\n";
-        }if(CBBurger.isSelected()){
-            int jumlah = Integer.parseInt(TFBurger.getText());
-            int total;
-            total = jumlah * 30000;
-            bayar += total;
-            tampilPesanan += "- " + CBBurger.getText() + " Rp. 25.000" + " x " + jumlah + " = " + total + "\n";
+        // Validasi data belum di isi
+    if (TFNama.getText().isEmpty() || TFAlamat.getText().isEmpty() || TFNoHp.getText().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Mohon lengkapi data customer terlebih dahulu!");
+        return;
+    }
+
+    // Validasi menu belum dipilih
+    if (!CBSteak.isSelected() && !CBPizza.isSelected() && !CBSphageti.isSelected() && !CBBurger.isSelected()) {
+        JOptionPane.showMessageDialog(this, "Mohon pilih minimal satu menu!");
+        return;
+    }
+
+    String tampilPesanan = "";
+    String tampilCustomer = "";
+    tampilCustomer += "Nama : " + TFNama.getText();
+    tampilCustomer += "\nAlamat : " + TFAlamat.getText();
+    tampilCustomer += "\nNo Hp : " + TFNoHp.getText();
+    int bayar = 0;
+    
+    if (CBSteak.isSelected()) {
+        if (!TFSteak.getText().isEmpty()) {
+            try {
+                int jumlah = Integer.parseInt(TFSteak.getText());
+                if (jumlah < 1) {
+                    JOptionPane.showMessageDialog(this, "Jumlah pesanan Steak tidak boleh kurang dari 1!");
+                    return;
+                }
+                int total = jumlah * 30000;
+                bayar += total;
+                tampilPesanan += "- " + CBSteak.getText() + " Rp. 30.000 x " + jumlah + " = " + total + "\n";
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Jumlah pesanan Steak harus berupa angka!");
+                return;
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Mohon isi jumlah pesanan Steak!");
+            return;
         }
-        TFTotalBayar.setText(String.valueOf(bayar));
-        TADataPenjualan.setText(tampilCustomer + "\n=====================================\nPesanan : \n" + tampilPesanan + "=====================================\n"+"Total Bayar = " + bayar);
+    }
+    if (CBPizza.isSelected()) {
+        if (!TFPizza.getText().isEmpty()) {
+            try {
+                int jumlah = Integer.parseInt(TFPizza.getText());
+                if (jumlah < 1) {
+                    JOptionPane.showMessageDialog(this, "Jumlah pesanan Pizza tidak boleh kurang dari 1!");
+                    return;
+                }
+                int total = jumlah * 50000;
+                bayar += total;
+                tampilPesanan += "- " + CBPizza.getText() + " Rp. 50.000 x " + jumlah + " = " + total + "\n";
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Jumlah pesanan Pizza harus berupa angka!");
+                return;
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Mohon isi jumlah pesanan Pizza!");
+            return;
+        }
+    }
+    if (CBSphageti.isSelected()) {
+        if (!TFSphageti.getText().isEmpty()) {
+            try{
+                int jumlah = Integer.parseInt(TFSphageti.getText());
+                if (jumlah < 1) {
+                    JOptionPane.showMessageDialog(this, "Jumlah pesanan Sphageti tidak boleh kurang dari 1!");
+                    return;
+                }
+                int total = jumlah * 20000;
+                bayar += total;
+                tampilPesanan += "- " + CBSphageti.getText() + " Rp. 20.000 x " + jumlah + " = " + total + "\n";
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Jumlah pesanan Sphageti harus berupa angka!");
+                return;
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Mohon isi jumlah pesanan Sphageti!");
+            return;
+        }
+    }
+    if (CBBurger.isSelected()) {
+        if (!TFBurger.getText().isEmpty()) {
+            try{
+                int jumlah = Integer.parseInt(TFBurger.getText());
+                if (jumlah < 1) {
+                    JOptionPane.showMessageDialog(this, "Jumlah pesanan Burger tidak boleh kurang dari 1!");
+                    return;
+                }
+                int total = jumlah * 25000;
+                bayar += total;
+                tampilPesanan += "- " + CBBurger.getText() + " Rp. 25.000 x " + jumlah + " = " + total + "\n";
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Jumlah pesanan Burger harus berupa angka!");
+                return;
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Mohon isi jumlah pesanan Burger!");
+            return;
+        }
+    }
+
+    TFTotalBayar.setText(String.valueOf(bayar));
+    TADataPenjualan.setText(tampilCustomer + "\n=====================================\nPesanan : \n" + tampilPesanan + "=====================================\n"+"Total Bayar = " + bayar);
     }//GEN-LAST:event_BtnTambahActionPerformed
 
     private void CBSteakActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CBSteakActionPerformed
@@ -362,7 +435,7 @@ public class Form extends javax.swing.JFrame {
         isSphagetiEnabled = CBSphageti.isSelected();
         TFSphageti.setEnabled(isSphagetiEnabled);
         if (!isSphagetiEnabled) {
-            TFSphageti.setText(""); // Jika checkbox dihilangkan, hapus inputannya
+            TFSphageti.setText(""); // Jika checkbox dihilangkan, hapus inputannya 
         }
     }//GEN-LAST:event_CBSphagetiActionPerformed
 
